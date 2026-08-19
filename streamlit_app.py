@@ -10,6 +10,7 @@ How to run:
     3. streamlit run streamlit_app.py
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -26,7 +27,10 @@ from sklearn.ensemble import RandomForestRegressor
 # ----------------------------------------------------------------------
 st.set_page_config(page_title="Nepal Trade Analysis", layout="wide")
 
-DATA_DIR = "streamlit_data"
+# Locate streamlit_data/ relative to THIS FILE, not the terminal's current folder.
+# This means it works no matter where you run `streamlit run` from.
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, "streamlit_data")
 
 
 @st.cache_data
@@ -45,9 +49,11 @@ try:
     nepal_trade, wb_trade, table2_clean, table5_clean, table6_clean, ml_df, results_df = load_data()
 except FileNotFoundError:
     st.error(
-        "Couldn't find the data files. Run Section 14 of the notebook first -- "
-        "it saves everything this app needs into a `streamlit_data/` folder "
-        "that must sit next to this script."
+        "Couldn't find the data files.\n\n"
+        f"Looked here: `{DATA_DIR}`\n\n"
+        "Run Section 14 of the notebook first -- it saves everything this app "
+        "needs into a `streamlit_data/` folder. That folder must sit in the "
+        "SAME folder as this script (streamlit_app.py)."
     )
     st.stop()
 
